@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { theme } from '../../styles/theme';
 
 const StyledContainer = styled.div`
   min-height: ${props => props.$fullHeight ? '100vh' : 'auto'};

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '../Stores';
@@ -19,7 +19,7 @@ const PageContainer = styled.div`
   padding: 2rem;
 `;
 
-const LoginCard = styled(Card)`
+const RegisterCard = styled(Card)`
   max-width: 400px;
   width: 100%;
 `;
@@ -62,7 +62,7 @@ const Input = styled.input`
   }
 `;
 
-const RegisterLink = styled(Link)`
+const LoginLink = styled(Link)`
   color: ${theme.colors.accent};
   text-decoration: none;
   text-align: center;
@@ -74,37 +74,16 @@ const RegisterLink = styled(Link)`
   }
 `;
 
-const LoginPage = observer(() => {
+const RegisterPage = observer(() => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { authStore } = useStores();
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
-
-  useEffect(() => {
-    console.log('Auth state changed:', authStore.isAuthenticated);
-    if (authStore.isAuthenticated) {
-      const from = location.state?.from || '/';
-      console.log('Redirecting to:', from);
-      navigate(from, { replace: true });
-    }
-  }, [authStore.isAuthenticated, location.state, navigate]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const success = await authStore.login(formData.email, formData.password);
-      console.log('Login success:', success);
-      if (success) {
-        authStore.checkAuthStatus(); // Force a check of auth status
-      }
-    } catch (error) {
-      console.error('Login submission error:', error);
-    }
-  };
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -113,21 +92,56 @@ const LoginPage = observer(() => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    // Basic validation
+    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+      setError('All fields are required');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      await authStore.register(formData.username, formData.email, formData.password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <PageContainer>
-      <LoginCard padding="large">
-        <Title>Welcome Back</Title>
+      <RegisterCard padding="large">
+        <Title>Create Account</Title>
         
-        {authStore.error && (
+        {error && (
           <FeedbackMessage
             type="error"
-            title="Login Error"
-            message={authStore.error}
+            title="Registration Error"
+            message={error}
             style={{ marginBottom: '1rem' }}
           />
         )}
 
         <Form onSubmit={handleSubmit}>
+          <InputGroup>
+            <Label htmlFor="username">Username</Label>
+            <Input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Enter your username"
+            />
+          </InputGroup>
+
           <InputGroup>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -137,7 +151,6 @@ const LoginPage = observer(() => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              required
             />
           </InputGroup>
 
@@ -150,7 +163,18 @@ const LoginPage = observer(() => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              required
+            />
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm your password"
             />
           </InputGroup>
 
@@ -159,18 +183,17 @@ const LoginPage = observer(() => {
             variant="accent"
             fullWidth
             size="large"
-            disabled={authStore.loading}
           >
-            {authStore.loading ? 'Logging in...' : 'Login'}
+            Register
           </Button>
         </Form>
 
-        <RegisterLink to="/register">
-          Don't have an account? Sign up
-        </RegisterLink>
-      </LoginCard>
+        <LoginLink to="/login">
+          Already have an account? Log in
+        </LoginLink>
+      </RegisterCard>
     </PageContainer>
   );
 });
 
-export default LoginPage; 
+export default RegisterPage; 

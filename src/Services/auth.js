@@ -22,14 +22,12 @@ export const authService = {
       }
       return false;
     } catch (error) {
-      console.error('Login error:', error.response?.data?.message || error.message);
       throw new Error(error.response?.data?.message || 'Failed to login. Please try again.');
     }
   },
 
   setToken(token) {
     try {
-      // Validate token format
       if (!token || typeof token !== 'string' || token.split('.').length !== 3) {
         throw new Error('Invalid token format');
       }
@@ -40,7 +38,6 @@ export const authService = {
         sameSite: 'Lax'
       });
     } catch (error) {
-      console.error('Error setting token:', error);
       throw new Error('Failed to save authentication token');
     }
   },
@@ -49,10 +46,7 @@ export const authService = {
     try {
       Cookies.remove('jwt_token');
     } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      // Always redirect to login page
-      window.location.href = '/login';
+      // Silent fail on logout errors
     }
   },
 
@@ -61,18 +55,17 @@ export const authService = {
       const token = this.getToken();
       if (!token) return false;
 
-      // Check if token is expired by checking its expiration date
       const payload = JSON.parse(atob(token.split('.')[1]));
-      const expirationTime = payload.exp * 1000; // Convert to milliseconds
+      const expirationTime = payload.exp * 1000;
+      const now = Date.now();
       
-      if (Date.now() >= expirationTime) {
+      if (now >= expirationTime) {
         this.logout();
         return false;
       }
       
       return true;
     } catch (error) {
-      console.error('Error checking authentication:', error);
       this.logout();
       return false;
     }
@@ -80,9 +73,9 @@ export const authService = {
 
   getToken() {
     try {
-      return Cookies.get('jwt_token') || null;
+      const token = Cookies.get('jwt_token');
+      return token || null;
     } catch (error) {
-      console.error('Error getting token:', error);
       return null;
     }
   }

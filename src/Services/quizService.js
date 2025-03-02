@@ -13,6 +13,8 @@ quizAxios.interceptors.request.use(
   (config) => {
     const token = authService.getToken();
     if (!token) {
+      // If no token is found, redirect to login
+      window.location.href = '/login';
       throw new Error('No authentication token found');
     }
     config.headers.Authorization = `Bearer ${token}`;
@@ -31,6 +33,8 @@ quizAxios.interceptors.response.use(
         (error.response?.status === 400 && error.response?.data?.message === 'Invalid token.')) {
       // Token has expired or is invalid
       authService.logout();
+      // Redirect to login
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -45,7 +49,6 @@ const quizService = {
       }
       return response.data.sessionId;
     } catch (error) {
-      console.error('Error starting quiz session:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -61,7 +64,6 @@ const quizService = {
       }
       return response.data;
     } catch (error) {
-      console.error('Error getting random question:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -81,7 +83,6 @@ const quizService = {
       }
       return response.data;
     } catch (error) {
-      console.error('Error submitting answer:', error.response?.data || error.message);
       throw error;
     }
   }

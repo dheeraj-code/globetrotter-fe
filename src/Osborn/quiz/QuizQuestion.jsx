@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { theme } from '../../styles/theme';
+import { theme } from '../../Styles/theme';
 import Card from '../base/Card';
 import Button from '../base/Button';
 import Progress from '../base/Progress';

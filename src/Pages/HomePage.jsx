@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../Services/auth';
-import { theme } from '../styles/theme';
+import { theme } from '../Styles/theme';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -148,14 +148,9 @@ const PlayButton = styled.button`
 const HomePage = () => {
     const navigate = useNavigate();
     
-    useEffect(() => {
-        console.log('HomePage mounted');
-        console.log('Theme:', theme);
-    }, []);
-
     const handlePlayClick = () => {
         if (authService.isAuthenticated()) {
-            navigate('/game');
+            navigate('/play');
         } else {
             navigate('/login');
         }

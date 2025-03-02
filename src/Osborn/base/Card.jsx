@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { theme } from '../../styles/theme';
+import { theme } from '../../Styles/theme';
 
 const StyledCard = styled.div`
   background: ${props => props.$variant === 'transparent' ? 'transparent' : theme.colors.cardBg};

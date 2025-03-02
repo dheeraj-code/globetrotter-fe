@@ -9,17 +9,17 @@ import FeedbackMessage from '../feedback/FeedbackMessage';
 
 const QuestionText = styled.h2`
   color: ${theme.colors.text};
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+  font-size: ${theme.typography.fontSize.xl};
+  margin-bottom: ${theme.spacing.md};
   text-align: center;
-  line-height: 1.4;
+  line-height: ${theme.typography.lineHeight.normal};
 `;
 
 const OptionsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin: 2rem 0;
+  gap: ${theme.spacing.md};
+  margin: ${theme.spacing.lg} 0;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -28,9 +28,9 @@ const OptionsGrid = styled.div`
 
 const QuestionCounter = styled.div`
   color: ${theme.colors.textSecondary};
-  font-size: 0.9rem;
+  font-size: ${theme.typography.fontSize.xs};
   text-align: center;
-  margin-bottom: 0.8rem;
+  margin-bottom: ${theme.spacing.xs};
 `;
 
 const QuizQuestion = ({

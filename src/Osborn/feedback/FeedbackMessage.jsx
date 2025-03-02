@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { theme } from '../../Styles/theme';
 
 const FeedbackContainer = styled.div`
-  padding: 1.5rem;
+  padding: ${theme.spacing.md};
   border-radius: ${theme.borderRadius.medium};
   background: ${props => {
     if (props.$type === 'success') return `${theme.colors.success}15`;
@@ -18,46 +18,46 @@ const FeedbackContainer = styled.div`
     if (props.$type === 'info') return theme.colors.accent;
     return theme.colors.primary;
   }};
-  margin: ${props => props.$margin || '1rem 0'};
+  margin: ${props => props.$margin || `${theme.spacing.sm} 0`};
 `;
 
 const Header = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
+  font-size: ${theme.typography.fontSize.md};
+  font-weight: ${theme.typography.fontWeight.bold};
   color: ${props => {
     if (props.$type === 'success') return theme.colors.success;
     if (props.$type === 'error') return theme.colors.error;
     if (props.$type === 'info') return theme.colors.accent;
     return theme.colors.primary;
   }};
-  margin-bottom: 0.8rem;
+  margin-bottom: ${theme.spacing.xs};
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: ${theme.spacing.xs};
 `;
 
 const Content = styled.div`
   color: ${theme.colors.text};
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: ${theme.typography.fontSize.xs};
+  line-height: ${theme.typography.lineHeight.relaxed};
 `;
 
 const DetailSection = styled.div`
   background: ${theme.colors.primary};
-  padding: 1rem;
+  padding: ${theme.spacing.sm};
   border-radius: ${theme.borderRadius.small};
-  margin-top: 1rem;
+  margin-top: ${theme.spacing.sm};
 
   h4 {
     color: ${theme.colors.accent};
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+    font-size: ${theme.typography.fontSize.xs};
+    margin-bottom: ${theme.spacing.xs};
+    font-weight: ${theme.typography.fontWeight.bold};
   }
 
   p {
     color: ${theme.colors.textSecondary};
-    font-size: 0.9rem;
+    font-size: ${theme.typography.fontSize.xs};
     margin: 0;
   }
 `;

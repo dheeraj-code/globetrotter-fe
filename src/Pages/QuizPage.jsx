@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
@@ -6,6 +6,8 @@ import { useStores } from '../Stores';
 import { theme } from '../Styles/theme';
 import Quiz from '../Components/Quiz';
 import Results from '../Components/Results';
+import ConfirmationPopup from '../Components/ConfirmationPopup';
+import { useNavigationBlocker } from '../hooks/useNavigationBlocker';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -23,13 +25,13 @@ const GameContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: ${theme.spacing.lg};
   background: ${theme.colors.background};
 `;
 
 const StartCard = styled.div`
   background: ${theme.colors.cardBg};
-  padding: 3rem;
+  padding: ${theme.spacing['2xl']};
   border-radius: ${theme.borderRadius.large};
   box-shadow: ${theme.shadows.card};
   max-width: 600px;
@@ -39,8 +41,8 @@ const StartCard = styled.div`
 `;
 
 const StartButton = styled.button`
-  padding: 1rem 2rem;
-  font-size: 1.3rem;
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  font-size: ${theme.typography.fontSize.lg};
   background: ${theme.colors.accent};
   color: ${theme.colors.text};
   border: none;
@@ -48,7 +50,7 @@ const StartButton = styled.button`
   cursor: pointer;
   transition: ${theme.transitions.default};
   box-shadow: ${theme.shadows.button};
-  font-weight: 600;
+  font-weight: ${theme.typography.fontWeight.semibold};
 
   &:hover {
     transform: translateY(-3px);
@@ -58,7 +60,7 @@ const StartButton = styled.button`
 
   &::after {
     content: '🎯';
-    margin-left: 10px;
+    margin-left: ${theme.spacing.xs};
     display: inline-block;
     transition: transform 0.2s ease;
   }
@@ -75,7 +77,7 @@ const LoadingSpinner = styled.div`
   width: 60px;
   height: 60px;
   animation: spin 1s linear infinite;
-  margin: 2rem;
+  margin: ${theme.spacing.lg};
 
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -111,15 +113,51 @@ const ErrorMessage = styled.div`
 const QuizPage = observer(() => {
   const navigate = useNavigate();
   const { authStore, quizStore } = useStores();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
 
+  // Handle initial authentication check and quiz session
   useEffect(() => {
     if (!authStore.isAuthenticated) {
       navigate('/login');
       return;
     }
 
+    if (!quizStore.gameStarted && !quizStore.showResults) {
+      quizStore.startNewSession();
+    }
+  }, [authStore.isAuthenticated, navigate, quizStore]);
+
+  const handleBlockedNavigation = useCallback((navigationCallback) => {
+    setPendingNavigation(() => navigationCallback);
+    setShowConfirmation(true);
+  }, []);
+
+  useNavigationBlocker(
+    quizStore.gameStarted && !quizStore.showResults,
+    handleBlockedNavigation
+  );
+
+  const handleContinueQuiz = () => {
+    setShowConfirmation(false);
+    setPendingNavigation(null);
+  };
+
+  const handleEndQuiz = () => {
+    setShowConfirmation(false);
+    if (pendingNavigation) {
+      quizStore.resetGame();
+      pendingNavigation();
+    } else {
+      quizStore.showResults = true;
+      quizStore.gameStarted = false;
+    }
+    setPendingNavigation(null);
+  };
+
+  const handleStartQuiz = () => {
     quizStore.startNewSession();
-  }, [navigate, authStore.isAuthenticated]);
+  };
 
   if (quizStore.error) {
     return (
@@ -127,7 +165,7 @@ const QuizPage = observer(() => {
         <GameContainer>
           <ErrorMessage>
             {quizStore.error}
-            <StartButton onClick={quizStore.startNewSession}>Try Again</StartButton>
+            <StartButton onClick={handleStartQuiz}>Try Again</StartButton>
           </ErrorMessage>
         </GameContainer>
       </PageContainer>
@@ -149,10 +187,15 @@ const QuizPage = observer(() => {
 
   return (
     <PageContainer>
+      <ConfirmationPopup
+        isOpen={showConfirmation}
+        onContinue={handleContinueQuiz}
+        onEnd={handleEndQuiz}
+      />
       <GameContainer>
         {!quizStore.gameStarted && !quizStore.showResults && (
           <StartCard>
-            <StartButton onClick={quizStore.startNewSession}>
+            <StartButton onClick={handleStartQuiz}>
               Start New Quiz
             </StartButton>
           </StartCard>
@@ -164,9 +207,9 @@ const QuizPage = observer(() => {
             options={quizStore.currentQuestion.options.map(opt => opt.text)}
             onOptionSelect={quizStore.submitAnswer}
             onNextQuestion={quizStore.handleNextQuestion}
-            currentQuestion={quizStore.questionCount + 1}
+            currentQuestion={quizStore.currentQuestionNumber}
             totalQuestions={quizStore.totalQuestions}
-            isLastQuestion={quizStore.questionCount + 1 === quizStore.totalQuestions}
+            isLastQuestion={quizStore.isLastQuestion}
           />
         )}
 
@@ -174,7 +217,7 @@ const QuizPage = observer(() => {
           <Results
             score={quizStore.score}
             totalQuestions={quizStore.totalQuestions}
-            onRestart={quizStore.startNewSession}
+            onRestart={handleStartQuiz}
           />
         )}
       </GameContainer>

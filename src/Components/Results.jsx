@@ -12,7 +12,7 @@ const ResultsContainer = styled.div`
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: ${theme.spacing.lg};
 `;
 
 const ResultsCard = styled(Card)`
@@ -20,64 +20,64 @@ const ResultsCard = styled(Card)`
 `;
 
 const ScoreText = styled.h2`
-  font-size: 2rem;
+  font-size: ${theme.typography.fontSize['2xl']};
   color: ${theme.colors.text};
-  margin-bottom: 1.5rem;
+  margin-bottom: ${theme.spacing.md};
 `;
 
 const ScorePercentage = styled.div`
-  font-size: 4rem;
-  font-weight: bold;
+  font-size: ${theme.typography.fontSize['3xl']};
+  font-weight: ${theme.typography.fontWeight.bold};
   color: ${props => {
     const percentage = (props.$score / props.$total) * 100;
     if (percentage >= 80) return theme.colors.success;
     if (percentage >= 60) return theme.colors.warning;
     return theme.colors.error;
   }};
-  margin: 2rem 0;
+  margin: ${theme.spacing.lg} 0;
 `;
 
 const MessageContainer = styled.div`
-  margin: 2rem 0;
+  margin: ${theme.spacing.lg} 0;
 `;
 
 const Message = styled.p`
   color: ${theme.colors.textSecondary};
-  font-size: 1.1rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
+  font-size: ${theme.typography.fontSize.md};
+  margin: ${theme.spacing.xs} 0;
+  line-height: ${theme.typography.lineHeight.relaxed};
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: ${theme.spacing.sm};
+  margin-top: ${theme.spacing.lg};
 `;
 
 const ChallengeInfo = styled.div`
   background: ${theme.colors.cardBg};
   border-radius: ${theme.borderRadius.medium};
-  padding: 1.5rem;
-  margin: 1rem 0;
+  padding: ${theme.spacing.md};
+  margin: ${theme.spacing.sm} 0;
   border: 1px solid ${theme.colors.accent}40;
 
   h3 {
     color: ${theme.colors.accent};
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+    font-size: ${theme.typography.fontSize.lg};
+    margin-bottom: ${theme.spacing.sm};
   }
 `;
 
 const ShareLink = styled.div`
   background: ${theme.colors.primary};
   border-radius: ${theme.borderRadius.small};
-  padding: 1rem;
-  margin-top: 1rem;
+  padding: ${theme.spacing.sm};
+  margin-top: ${theme.spacing.sm};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: ${theme.spacing.sm};
 
   input {
     flex: 1;

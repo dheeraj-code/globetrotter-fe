@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../Services/auth';
@@ -26,39 +26,41 @@ const WelcomeCard = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 3rem;
-  margin-bottom: 1.2rem;
+  font-size: ${theme.typography.fontSize['3xl']};
+  margin-bottom: ${theme.spacing.md};
   color: ${theme.colors.text};
-  font-weight: bold;
+  font-weight: ${theme.typography.fontWeight.bold};
   letter-spacing: -0.5px;
+  line-height: ${theme.typography.lineHeight.tight};
   
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: ${theme.typography.fontSize['2xl']};
   }
 `;
 
 const Subtitle = styled.h2`
   color: ${theme.colors.accent};
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
+  font-size: ${theme.typography.fontSize.lg};
+  margin-bottom: ${theme.spacing.md};
+  font-weight: ${theme.typography.fontWeight.semibold};
+  line-height: ${theme.typography.lineHeight.normal};
   
   @media (max-width: 768px) {
-    font-size: 1.3rem;
+    font-size: ${theme.typography.fontSize.md};
   }
 `;
 
 const Description = styled.p`
   color: ${theme.colors.textSecondary};
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-  line-height: 1.5;
+  font-size: ${theme.typography.fontSize.md};
+  margin-bottom: ${theme.spacing.lg};
+  line-height: ${theme.typography.lineHeight.relaxed};
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
   
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: ${theme.typography.fontSize.sm};
   }
 `;
 
@@ -74,15 +76,17 @@ const StatItem = styled.div`
   text-align: center;
 
   .value {
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: ${theme.typography.fontSize['2xl']};
+    font-weight: ${theme.typography.fontWeight.bold};
     color: ${theme.colors.accent};
-    margin-bottom: 0.4rem;
+    margin-bottom: ${theme.spacing.xs};
+    line-height: ${theme.typography.lineHeight.tight};
   }
 
   .label {
     color: ${theme.colors.textSecondary};
-    font-size: 0.9rem;
+    font-size: ${theme.typography.fontSize.xs};
+    line-height: ${theme.typography.lineHeight.normal};
   }
 `;
 
@@ -100,7 +104,7 @@ const FeatureGrid = styled.div`
 
 const FeatureCard = styled.div`
   background: ${theme.colors.primary};
-  padding: 1.5rem;
+  padding: ${theme.spacing.md};
   border-radius: ${theme.borderRadius.medium};
   text-align: center;
   transition: ${theme.transitions.default};
@@ -113,20 +117,22 @@ const FeatureCard = styled.div`
 
   h3 {
     color: ${theme.colors.accent};
-    margin-bottom: 0.8rem;
-    font-size: 1.2rem;
+    margin-bottom: ${theme.spacing.sm};
+    font-size: ${theme.typography.fontSize.md};
+    font-weight: ${theme.typography.fontWeight.semibold};
+    line-height: ${theme.typography.lineHeight.normal};
   }
 
   p {
     color: ${theme.colors.textSecondary};
-    font-size: 0.95rem;
-    line-height: 1.4;
+    font-size: ${theme.typography.fontSize.sm};
+    line-height: ${theme.typography.lineHeight.relaxed};
   }
 `;
 
 const PlayButton = styled.button`
-  padding: 1rem 2.5rem;
-  font-size: 1.3rem;
+  padding: ${theme.spacing.sm} ${theme.spacing.xl};
+  font-size: ${theme.typography.fontSize.lg};
   background: ${theme.colors.accent};
   color: ${theme.colors.text};
   border: none;
@@ -134,9 +140,9 @@ const PlayButton = styled.button`
   cursor: pointer;
   transition: ${theme.transitions.default};
   box-shadow: ${theme.shadows.button};
-  font-weight: 600;
+  font-weight: ${theme.typography.fontWeight.semibold};
   letter-spacing: 0.5px;
-  margin-top: 1.5rem;
+  margin-top: ${theme.spacing.md};
 
   &:hover {
     transform: translateY(-3px);

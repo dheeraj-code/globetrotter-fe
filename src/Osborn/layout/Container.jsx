@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { theme } from '../../Styles/theme';
 
 const StyledContainer = styled.div`
   min-height: ${props => props.$fullHeight ? '100vh' : 'auto'};
@@ -9,9 +10,9 @@ const StyledContainer = styled.div`
   margin: 0 auto;
   padding: ${props => {
     if (props.$padding === 'none') return '0';
-    if (props.$padding === 'small') return '1rem';
-    if (props.$padding === 'large') return '3rem';
-    return '2rem';
+    if (props.$padding === 'small') return theme.spacing.sm;
+    if (props.$padding === 'large') return theme.spacing['2xl'];
+    return theme.spacing.lg;
   }};
   background-color: ${props => props.$background || 'transparent'};
   display: flex;
@@ -24,9 +25,9 @@ const StyledContainer = styled.div`
   @media (max-width: 768px) {
     padding: ${props => {
       if (props.$padding === 'none') return '0';
-      if (props.$padding === 'small') return '0.5rem';
-      if (props.$padding === 'large') return '1.5rem';
-      return '1rem';
+      if (props.$padding === 'small') return theme.spacing.xs;
+      if (props.$padding === 'large') return theme.spacing.md;
+      return theme.spacing.sm;
     }};
   }
 `;

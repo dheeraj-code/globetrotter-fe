@@ -11,54 +11,54 @@ import FeedbackMessage from '../Osborn/feedback/FeedbackMessage';
 const QuizContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: ${theme.spacing.lg};
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: ${theme.spacing.lg};
 `;
 
 const QuestionText = styled.h2`
-  font-size: 1.5rem;
+  font-size: ${theme.typography.fontSize.xl};
   color: ${theme.colors.text};
-  margin-bottom: 1.5rem;
+  margin-bottom: ${theme.spacing.md};
   text-align: center;
 `;
 
 const OptionsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: ${theme.spacing.sm};
+  margin-bottom: ${theme.spacing.md};
 `;
 
 const FeedbackSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: ${theme.spacing.sm};
+  margin-top: ${theme.spacing.md};
 `;
 
 const FunFactContainer = styled.div`
-  margin-top: 0.5rem;
-  padding: 1.5rem;
+  margin-top: ${theme.spacing.xs};
+  padding: ${theme.spacing.md};
   background-color: ${theme.colors.cardBg};
   border-radius: ${theme.borderRadius.medium};
   border: 1px solid ${theme.colors.accent}40;
 
   h3 {
     color: ${theme.colors.accent};
-    font-size: 1.1rem;
-    margin-bottom: 0.8rem;
+    font-size: ${theme.typography.fontSize.md};
+    margin-bottom: ${theme.spacing.xs};
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: ${theme.spacing.xs};
   }
 
   p {
     color: ${theme.colors.textSecondary};
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: ${theme.typography.fontSize.sm};
+    line-height: ${theme.typography.lineHeight.relaxed};
     margin: 0;
   }
 `;
@@ -143,6 +143,14 @@ const Quiz = observer(({
 
         {showFeedback && (
           <FeedbackSection>
+            <Button
+              onClick={handleNextClick}
+              variant="primary"
+              fullWidth
+            >
+              {isLastQuestion ? 'Show Results' : 'Next Question'}
+            </Button>
+
             <FeedbackMessage
               type={feedback.isCorrect ? 'success' : 'error'}
               title={feedback.isCorrect ? "Correct! 🎉" : "Incorrect"}
@@ -166,14 +174,6 @@ const Quiz = observer(({
                 <p>{feedback.trivia}</p>
               </FunFactContainer>
             )}
-
-            <Button
-              onClick={handleNextClick}
-              variant="primary"
-              fullWidth
-            >
-              {isLastQuestion ? 'Show Results' : 'Next Question'}
-            </Button>
           </FeedbackSection>
         )}
       </Card>

@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000';
 
-// Create a new axios instance for auth service
 const authAxios = axios.create({
   baseURL: API_URL
 });
@@ -37,16 +36,16 @@ export const authService = {
         secure: import.meta.env.PROD,
         sameSite: 'Lax'
       });
-    } catch (error) {
-      throw new Error('Failed to save authentication token');
+    } catch (err) {
+      throw new Error('Failed to save authentication token: ' + err);
     }
   },
 
   logout() {
     try {
       Cookies.remove('jwt_token');
-    } catch (error) {
-      // Silent fail on logout errors
+    } catch (err) {
+      throw new Error('Failed to remove authentication token: ' + err);
     }
   },
 
@@ -65,7 +64,8 @@ export const authService = {
       }
       
       return true;
-    } catch (error) {
+    } catch (err) {
+      console.error('Error checking authentication:', err);
       this.logout();
       return false;
     }
@@ -75,7 +75,8 @@ export const authService = {
     try {
       const token = Cookies.get('jwt_token');
       return token || null;
-    } catch (error) {
+    } catch (err) {
+      console.error('Error getting token:', err);
       return null;
     }
   }

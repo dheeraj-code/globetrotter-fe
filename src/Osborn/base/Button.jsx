@@ -12,10 +12,10 @@ const StyledButton = styled.button`
     return theme.colors.primary;
   }};
   color: ${theme.colors.text};
-  padding: ${props => props.$size === 'large' ? '1.2rem' : props.$size === 'small' ? '0.6rem' : '0.8rem'} ${props => props.$size === 'large' ? '2rem' : props.$size === 'small' ? '1.2rem' : '1.6rem'};
+  padding: ${props => props.$size === 'large' ? theme.spacing.md : props.$size === 'small' ? theme.spacing.xs : theme.spacing.sm} ${props => props.$size === 'large' ? theme.spacing.lg : props.$size === 'small' ? theme.spacing.md : theme.spacing.lg};
   border: none;
   border-radius: ${theme.borderRadius.medium};
-  font-size: ${props => props.$size === 'large' ? '1.1rem' : props.$size === 'small' ? '0.9rem' : '1rem'};
+  font-size: ${props => props.$size === 'large' ? theme.typography.fontSize.lg : props.$size === 'small' ? theme.typography.fontSize.xs : theme.typography.fontSize.sm};
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   transition: ${theme.transitions.default};
   width: ${props => props.$fullWidth ? '100%' : 'auto'};
@@ -23,7 +23,7 @@ const StyledButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: ${theme.spacing.xs};
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   &:hover {

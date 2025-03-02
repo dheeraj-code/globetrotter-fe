@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import Navbar from './Components/Navbar';
@@ -28,64 +28,67 @@ const HomePage = () => (
   </div>
 );
 
-const App = observer(() => {
-  return (
-    <Router>
-      <AppContainer>
-        <Navbar />
-        <MainContent>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+const Layout = () => (
+  <AppContainer>
+    <Navbar />
+    <MainContent>
+      <Outlet />
+    </MainContent>
+  </AppContainer>
+);
 
-            {/* Protected Routes */}
-            <Route
-              path="/play"
-              element={
-                <ProtectedRoute>
-                  <QuizPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/challenge/:inviteLink"
-              element={
-                <ProtectedRoute>
-                  <ChallengePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/leaderboard"
-              element={
-                <ProtectedRoute>
-                  <div>Leaderboard Coming Soon!</div>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/challenges"
-              element={
-                <ProtectedRoute>
-                  <div>My Challenges Coming Soon!</div>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <div>Profile Coming Soon!</div>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </MainContent>
-      </AppContainer>
-    </Router>
-  );
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<Layout />}>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/play"
+        element={
+          <ProtectedRoute>
+            <QuizPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/challenge/:inviteLink"
+        element={
+          <ProtectedRoute>
+            <ChallengePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/leaderboard"
+        element={
+          <ProtectedRoute>
+            <div>Leaderboard Coming Soon!</div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/challenges"
+        element={
+          <ProtectedRoute>
+            <div>My Challenges Coming Soon!</div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <div>Profile Coming Soon!</div>
+          </ProtectedRoute>
+        }
+      />
+    </Route>
+  )
+);
+
+const App = observer(() => {
+  return <RouterProvider router={router} />;
 });
 
 export default App;

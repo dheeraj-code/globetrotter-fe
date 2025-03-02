@@ -192,8 +192,6 @@ class QuizStore {
         this.score += 1;
       }
 
-      this.questionCount += 1;
-
       return {
         isCorrect: result.isCorrect,
         funFact: result.funFact,
@@ -207,13 +205,25 @@ class QuizStore {
   };
 
   handleNextQuestion = async () => {
+    this.questionCount += 1;
+
     if (this.questionCount >= this.totalQuestions) {
       this.showResults = true;
       this.gameStarted = false;
-    } else {
-      await this.fetchNextQuestion();
+      this.currentQuestion = null;
+      return;
     }
+    
+    await this.fetchNextQuestion();
   };
+
+  get currentQuestionNumber() {
+    return this.questionCount + 1;
+  }
+
+  get isLastQuestion() {
+    return this.currentQuestionNumber === this.totalQuestions;
+  }
 
   resetGame = () => {
     this.sessionId = null;

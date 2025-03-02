@@ -16,7 +16,7 @@ const PageContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${theme.spacing.lg};
+  padding: 2rem;
 `;
 
 const RegisterCard = styled(Card)`
@@ -25,36 +25,36 @@ const RegisterCard = styled(Card)`
 `;
 
 const Title = styled.h1`
-  font-size: ${theme.typography.fontSize['2xl']};
+  font-size: 2rem;
   color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.lg};
+  margin-bottom: 2rem;
   text-align: center;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.md};
+  gap: 1.5rem;
 `;
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.xs};
+  gap: 0.5rem;
 `;
 
 const Label = styled.label`
   color: ${theme.colors.textSecondary};
-  font-size: ${theme.typography.fontSize.xs};
+  font-size: 0.9rem;
 `;
 
 const Input = styled.input`
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
+  padding: 0.8rem;
   border-radius: ${theme.borderRadius.small};
   border: 1px solid ${theme.colors.border};
   background: ${theme.colors.cardBg};
   color: ${theme.colors.text};
-  font-size: ${theme.typography.fontSize.sm};
+  font-size: 1rem;
 
   &:focus {
     outline: none;
@@ -66,8 +66,8 @@ const LoginLink = styled(Link)`
   color: ${theme.colors.accent};
   text-decoration: none;
   text-align: center;
-  margin-top: ${theme.spacing.sm};
-  font-size: ${theme.typography.fontSize.xs};
+  margin-top: 1rem;
+  font-size: 0.9rem;
 
   &:hover {
     text-decoration: underline;

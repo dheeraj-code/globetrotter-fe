@@ -1,16 +1,34 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { config } from '../config';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = `${config.apiBaseUrl}${config.endpoints.auth}`;
 
 const authAxios = axios.create({
-  baseURL: API_URL
+  baseURL: API_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
+
+authAxios.interceptors.response.use(
+  response => response,
+  error => {
+    if (!error.response) {
+      throw new Error('Network error. Please check your connection.');
+    }
+    if (error.response.status === 401) {
+      authService.logout();
+    }
+    throw error;
+  }
+);
 
 export const authService = {
   async login(email, password) {
     try {
-      const response = await authAxios.post('/auth/login', {
+      const response = await authAxios.post('/login', {
         email,
         password
       });
@@ -21,7 +39,8 @@ export const authService = {
       }
       return false;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to login. Please try again.');
+      const message = error.response?.data?.message || 'Failed to login. Please try again.';
+      throw new Error(message);
     }
   },
 
@@ -33,11 +52,11 @@ export const authService = {
 
       Cookies.set('jwt_token', token, { 
         expires: 7,
-        secure: import.meta.env.PROD,
+        secure: config.deployment.isProduction,
         sameSite: 'Lax'
       });
     } catch (err) {
-      throw new Error('Failed to save authentication token: ' + err);
+      throw new Error('Failed to save authentication token: ' + err.message);
     }
   },
 
@@ -45,7 +64,8 @@ export const authService = {
     try {
       Cookies.remove('jwt_token');
     } catch (err) {
-      throw new Error('Failed to remove authentication token: ' + err);
+      console.error('Error during logout:', err);
+      Cookies.remove('jwt_token');
     }
   },
 
@@ -58,7 +78,7 @@ export const authService = {
       const expirationTime = payload.exp * 1000;
       const now = Date.now();
       
-      if (now >= expirationTime) {
+      if (now >= expirationTime - 300000) {
         this.logout();
         return false;
       }
@@ -73,8 +93,7 @@ export const authService = {
 
   getToken() {
     try {
-      const token = Cookies.get('jwt_token');
-      return token || null;
+      return Cookies.get('jwt_token') || null;
     } catch (err) {
       console.error('Error getting token:', err);
       return null;

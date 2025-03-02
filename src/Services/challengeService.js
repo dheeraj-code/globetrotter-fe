@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { authService } from './auth';
+import { config } from '../config';
 
-const API_URL = 'http://localhost:5000/challenge';
+const API_URL = `${config.apiBaseUrl}${config.endpoints.challenge}`;
 
 // Create a new axios instance for challenge service
 const challengeAxios = axios.create({

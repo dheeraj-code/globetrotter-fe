@@ -37,7 +37,7 @@ const Quiz = ({
         isCorrect: result.isCorrect,
         funFact: result.funFact,
         trivia: result.trivia,
-        correctAnswerId: result.correctAnswerId,
+        correctAnswerIndex: result.correctAnswerIndex,
       });
       setShowFeedback(true);
     }
@@ -52,7 +52,7 @@ const Quiz = ({
 
   const getCorrectAnswerText = () => {
     const correct = currentQuestion.options.find(
-      (opt) => opt.id === feedback.correctAnswerId
+      (opt) => opt.id === feedback.correctAnswerIndex
     );
     return correct ? correct.text : "Unknown";
   };
@@ -83,7 +83,7 @@ const Quiz = ({
             let buttonColor = "purple";
 
             if (showFeedback) {
-              if (option.id === feedback.correctAnswerId) {
+              if (option.id === feedback.correctAnswerIndex) {
                 buttonColor = "green";
               } else if (selectedOption?.id === option.id) {
                 buttonColor = "danger";

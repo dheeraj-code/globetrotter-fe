@@ -32,8 +32,6 @@ export const authService = {
         email,
         password
       });
-
-      console.log(response.data, response.data.token)
       
       if (response.data.token) {
         this.setToken(response.data.token);

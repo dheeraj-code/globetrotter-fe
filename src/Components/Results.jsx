@@ -148,6 +148,9 @@ const Results = ({ score, totalQuestions, onRestart }) => {
                 type="text"
                 readOnly
                 value={`${config.appBaseUrl}/challenge/${inviteLink}`}
+                style={{
+                  color: "black"
+                }}
               />
               <Button
                 onClick={handleCopyLink}

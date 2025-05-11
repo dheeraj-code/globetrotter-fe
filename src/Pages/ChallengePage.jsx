@@ -75,10 +75,10 @@ const ChallengePage = () => {
   const [isStarted, setIsStarted] = useState(false);
 
   useEffect(() => {
-    // if (!auth.isAuthenticated) {
-    //   navigate("/login");
-    //   return;
-    // }
+    if (!auth.isAuthenticated) {
+      navigate("/login");
+      return;
+    }
 
     const loadChallengeInfo = async () => {
       try {
@@ -93,7 +93,7 @@ const ChallengePage = () => {
     };
 
     loadChallengeInfo();
-  }, [inviteLink, quiz]);
+  }, [inviteLink]);
 
   const handleStartChallenge = async () => {
     try {

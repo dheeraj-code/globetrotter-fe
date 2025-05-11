@@ -113,8 +113,6 @@ export const useQuizStore = create(
             selectedOptionId === currentQuestion.correctAnswer
           );
 
-          console.log(result, currentQuestion)
-
           set({ score: result.score });
 
           return {
@@ -182,7 +180,6 @@ export const useQuizStore = create(
             id: challenge.id,
           };
         } catch (error) {
-          console.log(error)
           setError(error.message);
           throw error;
         } finally {
@@ -202,7 +199,7 @@ export const useQuizStore = create(
           const result = await challengeService.acceptChallenge(inviteLink);
 
           set({
-            sessionId: result.quizSession.id,
+            sessionId: result.inviteeSession.id,
             challengerScore: challenge.inviter_score ?? 0,
             isChallenge: true,
             challengeId: challenge.id,

@@ -52,11 +52,12 @@ const challengeService = {
 
   getChallengeByLink: async (inviteLink) => {
     const response = await challengeAxios.get(`/${inviteLink}`);
+    console.log(response)
     return response.data;
   },
 
   acceptChallenge: async (inviteLink) => {
-    const response = await challengeAxios.post(`/${inviteLink}/accept`);
+    const response = await challengeAxios.post(`/accept/${inviteLink}`);
     return response.data;
   },
 

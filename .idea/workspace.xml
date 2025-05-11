@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="eeea3b06-5b24-41b0-b38d-d90ea482296e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Navbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Quiz.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Quiz.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Results.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Results.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/ChallengePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ChallengePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/LoginPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/QuizPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/QuizPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/RegisterPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/RegisterPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Services/challengeService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Services/challengeService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Stores/quizStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Stores/quizStore.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2wwZhNGpJQud4SNZTxhELATCa8k" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/Users/adarshtripathi/Downloads/globetrotter_frontend"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="eeea3b06-5b24-41b0-b38d-d90ea482296e" name="Changes" comment="" />
+      <created>1746954714465</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746954714465</updated>
+    </task>
+    <servers />
+  </component>
+</project>

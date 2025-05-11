@@ -50,12 +50,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: #000000;
     color: #ffffff;
-    min-height: 90vh;
+    min-height: 100vh;
     width: 100%;
 }
 
 #root {
-    min-height: 90vh;
+    min-height: 100vh;
     width: 100%;
 }
 

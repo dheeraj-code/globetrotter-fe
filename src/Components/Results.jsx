@@ -1,137 +1,60 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { theme } from '../styles/theme';
 import { useRootStore } from '../Stores';
-import { Button, Card, Alert } from "antd";
+import { Button, Alert, Typography } from "antd";
 import { config } from '../config';
+import {
+  ResultsContainer,
+  ResultsCard,
+  ScorePercentage,
+  ButtonContainer,
+  ChallengeInfo,
+  ShareLink,
+} from "../styles/ResultsStyles";
 
-
-const ResultsContainer = styled.div`
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: ${theme.spacing.lg};
-`;
-
-const ResultsCard = styled(Card)`
-  text-align: center;
-`;
-
-const ScoreText = styled.h2`
-  font-size: ${theme.typography.fontSize['2xl']};
-  color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.md};
-`;
-
-const ScorePercentage = styled.div`
-  font-size: ${theme.typography.fontSize['3xl']};
-  font-weight: ${theme.typography.fontWeight.bold};
-  color: ${props => {
-    const percentage = (props.$score / props.$total) * 100;
-    if (percentage >= 80) return theme.colors.success;
-    if (percentage >= 60) return theme.colors.warning;
-    return theme.colors.error;
-  }};
-  margin: ${theme.spacing.lg} 0;
-`;
-
-const MessageContainer = styled.div`
-  margin: ${theme.spacing.lg} 0;
-`;
-
-const Message = styled.p`
-  color: ${theme.colors.textSecondary};
-  font-size: ${theme.typography.fontSize.md};
-  margin: ${theme.spacing.xs} 0;
-  line-height: ${theme.typography.lineHeight.relaxed};
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.sm};
-  margin-top: ${theme.spacing.lg};
-`;
-
-const ChallengeInfo = styled.div`
-  background: ${theme.colors.cardBg};
-  border-radius: ${theme.borderRadius.medium};
-  padding: ${theme.spacing.md};
-  margin: ${theme.spacing.sm} 0;
-  border: 1px solid ${theme.colors.accent}40;
-
-  h3 {
-    color: ${theme.colors.accent};
-    font-size: ${theme.typography.fontSize.lg};
-    margin-bottom: ${theme.spacing.sm};
-  }
-`;
-
-const ShareLink = styled.div`
-  background: ${theme.colors.primary};
-  border-radius: ${theme.borderRadius.small};
-  padding: ${theme.spacing.sm};
-  margin-top: ${theme.spacing.sm};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${theme.spacing.sm};
-
-  input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: ${theme.colors.text};
-    font-size: 0.9rem;
-    padding: 0.5rem;
-    &:focus {
-      outline: none;
-    }
-  }
-`;
+const { Title, Text } = Typography;
 
 const Results = ({ score, totalQuestions, onRestart }) => {
   const [copied, setCopied] = useState(false);
   const [challengeError, setChallengeError] = useState(null);
   const {
-  isChallenge,
-  challengerScore,
-  loading,
-  error,
-  inviteLink,
-  sessionId,
-  createChallenge,
-  setLoading
-} = useRootStore().quiz;
-  
+    isChallenge,
+    challengerScore,
+    loading,
+    error,
+    inviteLink,
+    sessionId,
+    createChallenge,
+    setLoading,
+  } = useRootStore().quiz;
+
   const percentage = (score / totalQuestions) * 100;
 
   const getMessage = () => {
     if (percentage >= 80) {
-      return "Excellent! You're a geography expert! Keep challenging yourself!";
+      return "Excellent! You have a strong grasp of geography. Keep it up!";
     } else if (percentage >= 60) {
-      return "Good job! Keep exploring to improve your knowledge of the world!";
+      return "Good effort! Continue exploring to enhance your knowledge.";
     } else {
-      return "Keep practicing! Every quiz is a chance to learn more about our fascinating world!";
+      return "Keep practicing! Each quiz is an opportunity to learn more.";
     }
   };
 
   const handleShareChallenge = async () => {
     try {
       setChallengeError(null);
-      
+
       if (!sessionId) {
         throw new Error('Quiz session has expired. Please start a new quiz to challenge friends.');
       }
-      
+
       setLoading(true);
       const result = await createChallenge();
-      
+
       if (error) {
         throw new Error(error);
       }
-      
+
       if (!result || !result.inviteLink) {
         throw new Error('No invite link received from server');
       }
@@ -153,35 +76,36 @@ const Results = ({ score, totalQuestions, onRestart }) => {
 
   return (
     <ResultsContainer>
-      <ResultsCard padding="large">
-        <ScoreText>Quiz Results</ScoreText>
-        
+      <ResultsCard>
+        <Title level={2} style={{ color: "#3498db" }}>Quiz Results</Title>
+
         {isChallenge && challengerScore !== null && (
           <ChallengeInfo>
-            <h3>🏆 Challenge Results</h3>
-            <Message>
+            <Title level={4} style={{ color: "#e67e22" }}>Challenge Results</Title>
+            <Text style={{ color: "#2c3e50" }}>
               Challenger's Score: {challengerScore} / {totalQuestions}
-            </Message>
-            <Message>
+            </Text>
+            <br />
+            <Text style={{ color: "#2c3e50" }}>
               Your Score: {score} / {totalQuestions}
-            </Message>
+            </Text>
             {score > challengerScore ? (
               <Alert
                 type="success"
-                title="Congratulations! 🎉"
-                message="You beat the challenger's score!"
+                message="Congratulations! You outperformed the challenger!"
+                showIcon
               />
             ) : score === challengerScore ? (
               <Alert
                 type="info"
-                title="It's a Tie! 🤝"
-                message="You matched the challenger's score!"
+                message="It's a Tie! You matched the challenger's score."
+                showIcon
               />
             ) : (
               <Alert
                 type="error"
-                title="Almost There! 💪"
-                message="Try again to beat the challenger's score!"
+                message="Almost There! Try again to surpass the challenger's score."
+                showIcon
               />
             )}
           </ChallengeInfo>
@@ -190,31 +114,29 @@ const Results = ({ score, totalQuestions, onRestart }) => {
         <ScorePercentage $score={score} $total={totalQuestions}>
           {percentage.toFixed(0)}%
         </ScorePercentage>
-        
-        <MessageContainer>
-          <Message>{getMessage()}</Message>
-          <Message>
-            You answered {score} out of {totalQuestions} questions correctly!
-          </Message>
-        </MessageContainer>
+
+        <Text style={{ color: "#2c3e50", fontSize: "16px" }}>{getMessage()}</Text>
+        <br />
+        <Text style={{ color: "#2c3e50", fontSize: "16px" }}>
+          You answered {score} out of {totalQuestions} questions correctly!
+        </Text>
 
         <ButtonContainer>
           {!isChallenge && !inviteLink && (
             <>
               <Button
                 onClick={handleShareChallenge}
-                variant="accent"
-                fullWidth
+                type="primary"
                 size="large"
                 disabled={loading}
               >
-                {loading ? 'Creating Challenge...' : 'Challenge Friends 🎮'}
+                {loading ? 'Creating Challenge...' : 'Challenge Friends'}
               </Button>
               {(challengeError || error) && (
                 <Alert
                   type="error"
-                  title="Challenge Creation Failed"
                   message={challengeError || error}
+                  showIcon
                 />
               )}
             </>
@@ -229,18 +151,17 @@ const Results = ({ score, totalQuestions, onRestart }) => {
               />
               <Button
                 onClick={handleCopyLink}
-                variant="accent"
+                type="primary"
                 size="small"
               >
-                {copied ? 'Copied! ✓' : 'Copy Link'}
+                {copied ? 'Copied!' : 'Copy Link'}
               </Button>
             </ShareLink>
           )}
 
           <Button
             onClick={onRestart}
-            variant="primary"
-            fullWidth
+            type="primary"
             size="large"
           >
             {isChallenge ? 'Try Another Challenge' : 'Try Another Quiz'}
@@ -254,7 +175,7 @@ const Results = ({ score, totalQuestions, onRestart }) => {
 Results.propTypes = {
   score: PropTypes.number.isRequired,
   totalQuestions: PropTypes.number.isRequired,
-  onRestart: PropTypes.func.isRequired
+  onRestart: PropTypes.func.isRequired,
 };
 
-export default Results; 
+export default Results;

@@ -182,6 +182,7 @@ export const useQuizStore = create(
             id: challenge.id,
           };
         } catch (error) {
+          console.log(error)
           setError(error.message);
           throw error;
         } finally {

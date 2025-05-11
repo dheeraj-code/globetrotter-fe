@@ -1,97 +1,25 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { useRootStore } from "../Stores";
-import { theme } from "../styles/theme";
 import Quiz from "../Components/Quiz";
 import Results from "../Components/Results";
 import ConfirmationPopup from "../Components/ConfirmationPopup";
 import { useNavigationBlocker } from "../Hooks/useNavigationBlocker";
-import { Button, Card } from "antd";
-
-const PageContainer = styled.div`
-  min-height: 90vh;
-  width: 100%;
-  color: ${theme.colors.text};
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  background-image: linear-gradient(
-    to right top,
-    #a4d0f2,
-    #abc2f5,
-    #c1b0ee,
-    #dc9bd7,
-    #f086b3
-  );
-`;
-
-const GameContainer = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: ${theme.spacing.lg};
-`;
-
-const LoadingSpinner = styled.div`
-  border: 4px solid ${theme.colors.cardBg};
-  border-top: 4px solid ${theme.colors.accent};
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  margin: ${theme.spacing.lg};
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const LoadingText = styled.p`
-  color: ${theme.colors.textSecondary};
-  font-size: 1.1rem;
-  margin-top: 1.2rem;
-  animation: pulse 2s infinite;
-
-  @keyframes pulse {
-    0% {
-      opacity: 0.6;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.6;
-    }
-  }
-`;
-
-const ErrorMessage = styled.div`
-  color: ${theme.colors.text};
-  padding: 2rem;
-  text-align: center;
-  background: ${theme.colors.background};
-  border-radius: ${theme.borderRadius.medium};
-  margin: 2rem 0;
-  border: 1px solid ${theme.colors.error};
-  max-width: 600px;
-  width: 100%;
-`;
+import { Button, Card, Spin } from "antd";
+import {
+  PageContainer,
+  GameContainer,
+  LoadingText,
+  ErrorMessage,
+  GlobalTitle,
+} from "../styles/QuizPageStyles";
 
 const QuizPage = () => {
   const navigate = useNavigate();
-  const { auth, quiz } = useRootStore(); // Updated store usage
+  const { auth, quiz } = useRootStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
   const hasStartedRef = useRef(false);
-
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -99,17 +27,15 @@ const QuizPage = () => {
       return;
     }
 
-    console.log("hello")
-
     if (
       auth.isAuthenticated &&
       !quiz.gameStarted &&
       !quiz.showResults &&
       !quiz.loading &&
-      !quiz.error && !hasStartedRef.current
+      !quiz.error &&
+      !hasStartedRef.current
     ) {
       hasStartedRef.current = true;
-
       quiz.startNewSession();
     }
   }, [
@@ -156,6 +82,7 @@ const QuizPage = () => {
     return (
       <PageContainer>
         <GameContainer>
+          <GlobalTitle>Globetrotter Quiz 🚀</GlobalTitle>
           <ErrorMessage>
             {quiz.error}
             <Button onClick={handleStartQuiz}>Try Again</Button>
@@ -169,10 +96,18 @@ const QuizPage = () => {
     return (
       <PageContainer>
         <GameContainer>
-          <Card>
-            <LoadingSpinner />
-            <LoadingText>Loading your adventure...</LoadingText>
-          </Card>
+          <GlobalTitle>Globetrotter Quiz 🚀</GlobalTitle>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+          }}>
+            <Spin style={{
+              margin: "0 auto"
+            }} size="large" />
+            <LoadingText>Preparing quiz... ⏳</LoadingText>
+          </div>
         </GameContainer>
       </PageContainer>
     );
@@ -180,6 +115,7 @@ const QuizPage = () => {
 
   return (
     <PageContainer>
+      <GlobalTitle>Globetrotter Quiz 🚀</GlobalTitle>
       <ConfirmationPopup
         isOpen={showConfirmation}
         onContinue={handleContinueQuiz}
@@ -188,7 +124,7 @@ const QuizPage = () => {
       <GameContainer>
         {!quiz.gameStarted && !quiz.showResults && (
           <Card>
-            <Button onClick={handleStartQuiz}>Start New Quiz</Button>
+            <Button onClick={handleStartQuiz}>Start Quiz</Button>
           </Card>
         )}
 
@@ -202,6 +138,7 @@ const QuizPage = () => {
             currentQuestion={quiz.currentQuestion}
             totalQuestions={quiz.totalQuestions}
             isLastQuestion={quiz.isLastQuestion}
+            nextButtonText={quiz.isLastQuestion ? "View Results" : "Next Question"}
           />
         )}
 

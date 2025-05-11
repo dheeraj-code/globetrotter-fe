@@ -14,14 +14,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  background-image: linear-gradient(
-    to right top,
-    #a4d0f2,
-    #abc2f5,
-    #c1b0ee,
-    #dc9bd7,
-    #f086b3
-  );
+  background-image: linear-gradient(to right, #edf5f7, #eaf0f5, #e9ecf2, #e9e7ed, #e8e2e7);
 `;
 
 const ChallengeContainer = styled.div`
@@ -100,7 +93,7 @@ const ChallengePage = () => {
     };
 
     loadChallengeInfo();
-  }, [inviteLink]);
+  }, [inviteLink, quiz]);
 
   const handleStartChallenge = async () => {
     try {
@@ -151,9 +144,9 @@ const ChallengePage = () => {
     <PageContainer>
       <ChallengeContainer>
         <ChallengeCard padding="large">
-          <Title>Challenge Invitation! 🎮</Title>
+          <Title>Challenge Invitation</Title>
           <Message>
-            You've been invited to take on a geography quiz challenge!
+            You have been invited to participate in a geography quiz challenge.
           </Message>
 
           {challengeData && (
@@ -166,7 +159,7 @@ const ChallengePage = () => {
           )}
 
           <Message>
-            Think you can beat their score? Accept the challenge and find out!
+            Think you can outperform their score? Accept the challenge to find out!
           </Message>
 
           <Button
@@ -176,7 +169,7 @@ const ChallengePage = () => {
             size="large"
             disabled={isStarted}
           >
-            {isStarted ? "Challenge Started..." : "Accept Challenge"}
+            {isStarted ? "Challenge in Progress..." : "Accept Challenge"}
           </Button>
         </ChallengeCard>
       </ChallengeContainer>

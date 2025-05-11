@@ -1,5 +1,5 @@
  const getApiBaseUrl = () => {
-  For development
+  // For development
   if (import.meta.env.DEV) {
     return 'http://localhost:8080';
   }

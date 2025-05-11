@@ -14,5 +14,6 @@ export const config = {
     auth: '/auth',
     quiz: '/quiz',
     challenge: '/challenge'
-  }
+  },
+  appBaseUrl: "https://gleeful-gingersnap-375dcd.netlify.app"
 }; 

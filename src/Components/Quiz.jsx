@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { theme } from "../Styles/theme";
+import { theme } from "../styles/theme";
 import { Card, Typography, Progress, Button, Alert } from "antd";
 import { useRootStore } from "../Stores";
 

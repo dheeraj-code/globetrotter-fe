@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { theme } from '../Styles/theme';
+import { theme } from '../styles/theme';
 import { Button } from "antd";
 
 const Overlay = styled.div`

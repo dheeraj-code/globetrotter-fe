@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRootStore } from "../Stores";
-import { theme } from "../Styles/theme";
+import { theme } from "../styles/theme";
 import Quiz from "../Components/Quiz";
 import Results from "../Components/Results";
 import ConfirmationPopup from "../Components/ConfirmationPopup";

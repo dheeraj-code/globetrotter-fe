@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../Services/auth';
-import { theme } from '../Styles/theme';
+import { theme } from '../styles/theme';
 
 const PageContainer = styled.div`
   min-height: 90vh;

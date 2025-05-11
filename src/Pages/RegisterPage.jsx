@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { useRootStore } from "../Stores";
-import { theme } from "../Styles/theme";
+import { theme } from "../styles/theme";
 import { Button, Card, Input, Alert } from "antd";
 
 const PageContainer = styled.div`

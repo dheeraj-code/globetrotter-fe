@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eeea3b06-5b24-41b0-b38d-d90ea482296e" name="Changes" comment="" />
+    <list default="true" id="eeea3b06-5b24-41b0-b38d-d90ea482296e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/Stores/quizStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Stores/quizStore.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

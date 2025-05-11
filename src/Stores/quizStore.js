@@ -172,10 +172,10 @@ export const useQuizStore = create(
         try {
           const challenge = await challengeService.getChallengeByLink(inviteLink);
           if (challenge.isOwnChallenge) throw new Error('Cannot accept your own challenge');
-          if (challenge.isAlreadyAccepted) throw new Error('Challenge already accepted');
+          if (challenge.status === "ACCEPTED") throw new Error('Challenge already accepted');
 
           return {
-            inviterScore: challenge.inviteScore ?? 0,
+            inviterScore: challenge.inviterScore ?? 0,
             totalQuestions,
             id: challenge.id,
           };

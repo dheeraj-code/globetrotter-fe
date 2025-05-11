@@ -175,7 +175,7 @@ export const useQuizStore = create(
           if (challenge.isAlreadyAccepted) throw new Error('Challenge already accepted');
 
           return {
-            inviterScore: challenge.inviter_score ?? 0,
+            inviterScore: challenge.inviteScore ?? 0,
             totalQuestions,
             id: challenge.id,
           };
@@ -200,7 +200,7 @@ export const useQuizStore = create(
 
           set({
             sessionId: result.inviteeSession.id,
-            challengerScore: challenge.inviter_score ?? 0,
+            challengerScore: challenge.inviterScore ?? 0,
             isChallenge: true,
             challengeId: challenge.id,
             gameStarted: true,

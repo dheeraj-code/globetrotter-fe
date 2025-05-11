@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { useRootStore } from '../Stores';
 import { Button, Card, Alert } from "antd";
+import { config } from '../config';
 
 
 const ResultsContainer = styled.div`
@@ -142,7 +143,7 @@ const Results = ({ score, totalQuestions, onRestart }) => {
   };
 
   const handleCopyLink = () => {
-    const challengeLink = `${window.location.origin}/challenge/${inviteLink}`;
+    const challengeLink = `${config.appBaseUrl}/challenge/${inviteLink}`;
     navigator.clipboard.writeText(challengeLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -224,7 +225,7 @@ const Results = ({ score, totalQuestions, onRestart }) => {
               <input
                 type="text"
                 readOnly
-                value={`${window.location.origin}/challenge/${inviteLink}`}
+                value={`${config.appBaseUrl}/challenge/${inviteLink}`}
               />
               <Button
                 onClick={handleCopyLink}

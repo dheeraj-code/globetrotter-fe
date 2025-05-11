@@ -67,9 +67,10 @@ const { score } = useRootStore().quiz;
     if (showFeedback) return;
 
     setSelectedOption(option);
-    const result = await onOptionSelect(option);
+    console.log(option)
+    const result = await onOptionSelect(option.id);
 
-    console.log(result, question, currentQuestion);
+    console.log(result, question, currentQuestion, option);
 
     if (result) {
       setFeedback({
@@ -88,8 +89,6 @@ const { score } = useRootStore().quiz;
     setFeedback(null);
     onNextQuestion();
   };
-
-  console.log(score, progress);
 
   return (
     <Card
@@ -121,7 +120,7 @@ const { score } = useRootStore().quiz;
         </Title>
 
         <OptionsGrid>
-          {options.map((option, index) => {
+          {currentQuestion.options.map((option, index) => {
             let buttonColor = "purple";
             if (showFeedback) {
               if (feedback.correctAnswerIndex === index) {
@@ -132,7 +131,7 @@ const { score } = useRootStore().quiz;
             } else if (selectedOption === option) {
               buttonColor = "purple";
             }
-
+            
             return (
               <Button
                 type="primary"
@@ -141,7 +140,7 @@ const { score } = useRootStore().quiz;
                 disabled={showFeedback}
                 color={buttonColor}
               >
-                {option}
+                {options[index]}
               </Button>
             );
           })}

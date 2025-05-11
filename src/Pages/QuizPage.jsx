@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRootStore } from "../Stores";
@@ -90,6 +90,8 @@ const QuizPage = () => {
   const { auth, quiz } = useRootStore(); // Updated store usage
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
+  const hasStartedRef = useRef(false);
+
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -97,13 +99,17 @@ const QuizPage = () => {
       return;
     }
 
+    console.log("hello")
+
     if (
       auth.isAuthenticated &&
       !quiz.gameStarted &&
       !quiz.showResults &&
       !quiz.loading &&
-      !quiz.error
+      !quiz.error && !hasStartedRef.current
     ) {
+      hasStartedRef.current = true;
+
       quiz.startNewSession();
     }
   }, [

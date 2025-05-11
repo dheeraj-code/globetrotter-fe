@@ -85,12 +85,14 @@ export const useQuizStore = create(
               }))
             : [];
 
+          // console.log(questionData.options)
+
           set({
             currentQuestion: {
               id: questionData.id,
               question: clueText,
               options,
-              correctAnswer: questionData.options.findIndex((opt) => opt.id === questionData.cityId),
+              correctAnswer: questionData.cityId,
             },
           });
         } catch (error) {
@@ -100,26 +102,23 @@ export const useQuizStore = create(
         }
       },
 
-      submitAnswer: async (selectedOptionText) => {
+      submitAnswer: async (selectedOptionId) => {
         const { currentQuestion, sessionId } = get();
         try {
-          const selectedIndex = currentQuestion.options.findIndex(
-            (opt) => opt.text === selectedOptionText
-          );
-          const selectedOption = currentQuestion.options[selectedIndex];
+          // console.log(selectedIndex, selectedOption, currentQuestion, selectedOptionId)
           const result = await quizService.submitAnswer(
             sessionId,
             currentQuestion.id,
-            selectedOption.id,
-            selectedOption.id === currentQuestion.correctAnswer
+            selectedOptionId,
+            selectedOptionId === currentQuestion.correctAnswer
           );
 
-          console.log(result)
+          console.log(result, currentQuestion)
 
           set({ score: result.score });
 
           return {
-            isCorrect: selectedOption.id === currentQuestion.correctAnswer,
+            isCorrect: selectedOptionId === currentQuestion.correctAnswer,
             funFact: result.funFact,
             trivia: result.trivia,
             correctAnswerIndex: currentQuestion.correctAnswer,

@@ -30,7 +30,7 @@ const challengeService = {
       if (!quizSessionId) {
         throw new Error('Quiz session ID is required to create a challenge');
       }
-      const response = await challengeAxios.post('/create', { quizSessionId });
+      const response = await challengeAxios.post('/create', { sessionId: quizSessionId });
       
       if (!response.data || !response.data.inviteLink) {
         throw new Error('Invalid response from server when creating challenge');

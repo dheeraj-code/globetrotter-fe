@@ -45,7 +45,6 @@ const quizService = {
   startQuizSession: async () => {
     const response = await quizAxios.post('/start');
     const sessionId = response.data?.id;
-    console.log(response.data)
     if (!sessionId) {
       throw new Error('Invalid response format: missing sessionId');
     }

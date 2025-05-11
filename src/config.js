@@ -5,7 +5,7 @@ const getApiBaseUrl = () => {
   }
   
   // For production
-  return import.meta.env.VITE_API_BASE_URL || 'https://api.globetrotter.com';
+  return import.meta.env.VITE_API_BASE_URL || 'https://globetrotter-be-production.up.railway.app';
 };
 
 export const config = {

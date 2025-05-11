@@ -7,7 +7,7 @@ import RegisterPage from './Pages/RegisterPage';
 import QuizPage from './Pages/QuizPage';
 import ChallengePage from './Pages/ChallengePage';
 import ProtectedRoute from './Components/ProtectedRoute';
-import { theme } from './Styles/theme';
+import { theme } from './styles/theme';
 
 const AppContainer = styled.div`
   min-height: 90vh;

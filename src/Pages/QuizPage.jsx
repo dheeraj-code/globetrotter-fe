@@ -6,7 +6,7 @@ import { theme } from "../styles/theme";
 import Quiz from "../Components/Quiz";
 import Results from "../Components/Results";
 import ConfirmationPopup from "../Components/ConfirmationPopup";
-import { useNavigationBlocker } from "../hooks/useNavigationBlocker";
+import { useNavigationBlocker } from "../Hooks/useNavigationBlocker";
 import { Button, Card } from "antd";
 
 const PageContainer = styled.div`

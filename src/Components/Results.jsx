@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
 import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
-import Card from '../Osborn/base/Card';
-import FeedbackMessage from '../Osborn/feedback/FeedbackMessage';
+import { useRootStore } from '../Stores';
+import { Button, Card, Alert } from "antd";
+
 
 const ResultsContainer = styled.div`
   width: 100%;
@@ -92,19 +90,19 @@ const ShareLink = styled.div`
   }
 `;
 
-const Results = observer(({ score, totalQuestions, onRestart }) => {
+const Results = ({ score, totalQuestions, onRestart }) => {
   const [copied, setCopied] = useState(false);
   const [challengeError, setChallengeError] = useState(null);
-  const { quizStore } = useStores();
-  
   const {
-    isChallenge,
-    challengerScore,
-    loading,
-    error,
-    inviteLink,
-    sessionId
-  } = quizStore;
+  isChallenge,
+  challengerScore,
+  loading,
+  error,
+  inviteLink,
+  sessionId,
+  createChallenge,
+  setLoading
+} = useRootStore().quiz;
   
   const percentage = (score / totalQuestions) * 100;
 
@@ -126,8 +124,8 @@ const Results = observer(({ score, totalQuestions, onRestart }) => {
         throw new Error('Quiz session has expired. Please start a new quiz to challenge friends.');
       }
       
-      quizStore.setLoading(true);
-      const result = await quizStore.createChallenge();
+      setLoading(true);
+      const result = await createChallenge();
       
       if (error) {
         throw new Error(error);
@@ -139,7 +137,7 @@ const Results = observer(({ score, totalQuestions, onRestart }) => {
     } catch (error) {
       setChallengeError(error.message || 'Failed to create challenge. Please try again.');
     } finally {
-      quizStore.setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -167,19 +165,19 @@ const Results = observer(({ score, totalQuestions, onRestart }) => {
               Your Score: {score} / {totalQuestions}
             </Message>
             {score > challengerScore ? (
-              <FeedbackMessage
+              <Alert
                 type="success"
                 title="Congratulations! 🎉"
                 message="You beat the challenger's score!"
               />
             ) : score === challengerScore ? (
-              <FeedbackMessage
+              <Alert
                 type="info"
                 title="It's a Tie! 🤝"
                 message="You matched the challenger's score!"
               />
             ) : (
-              <FeedbackMessage
+              <Alert
                 type="error"
                 title="Almost There! 💪"
                 message="Try again to beat the challenger's score!"
@@ -212,7 +210,7 @@ const Results = observer(({ score, totalQuestions, onRestart }) => {
                 {loading ? 'Creating Challenge...' : 'Challenge Friends 🎮'}
               </Button>
               {(challengeError || error) && (
-                <FeedbackMessage
+                <Alert
                   type="error"
                   title="Challenge Creation Failed"
                   message={challengeError || error}
@@ -250,7 +248,7 @@ const Results = observer(({ score, totalQuestions, onRestart }) => {
       </ResultsCard>
     </ResultsContainer>
   );
-});
+};
 
 Results.propTypes = {
   score: PropTypes.number.isRequired,

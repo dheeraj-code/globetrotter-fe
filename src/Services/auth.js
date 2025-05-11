@@ -32,6 +32,8 @@ export const authService = {
         email,
         password
       });
+
+      console.log(response.data, response.data.token)
       
       if (response.data.token) {
         this.setToken(response.data.token);
@@ -44,18 +46,38 @@ export const authService = {
     }
   },
 
+  async register(username, email, password) {
+    try {
+      const response = await authAxios.post('/register', {
+        username,
+        email,
+        password
+      });
+
+      if (response.data.token) {
+        this.setToken(response.data.token);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to register. Please try again.';
+      throw new Error(message);
+    }
+  },
+
   setToken(token) {
     try {
-      if (!token || typeof token !== 'string' || token.split('.').length !== 3) {
+      if (!token || typeof token !== 'string') {
         throw new Error('Invalid token format');
       }
 
       Cookies.set('jwt_token', token, { 
         expires: 7,
-        secure: config.deployment.isProduction,
+        secure: "true",
         sameSite: 'Lax'
       });
     } catch (err) {
+      console.log(err)
       throw new Error('Failed to save authentication token: ' + err.message);
     }
   },

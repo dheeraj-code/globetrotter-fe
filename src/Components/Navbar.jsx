@@ -1,13 +1,12 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
-import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useRootStore } from "../Stores";
+import { theme } from "../Styles/theme";
+import {Button } from "antd";
 
 const NavbarContainer = styled.nav`
-  background: ${theme.colors.primary};
+  background: ${theme.colors.secondary};
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
@@ -58,24 +57,29 @@ const AuthButtons = styled.div`
   gap: 1rem;
 `;
 
-const Navbar = observer(() => {
+const Navbar = () => {
   const navigate = useNavigate();
-  const { authStore } = useStores();
+  const { auth: authStore } = useRootStore();
 
   const handleLogout = async () => {
     await authStore.logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <NavbarContainer>
-      <Logo to="/">
-        🌍 GlobeTrotter
-      </Logo>
+      <Logo to="/">🌍 GlobeTrotter</Logo>
 
       <NavLinks>
         {authStore.isAuthenticated ? (
-          <NavLink to="/play">Play Quiz</NavLink>
+          <Button
+            type="primary"
+            onClick={async () => {
+              navigate("/play");
+            }}
+          >
+            Play Quiz
+          </Button>
         ) : (
           <NavLink to="/play">Start Playing</NavLink>
         )}
@@ -83,26 +87,20 @@ const Navbar = observer(() => {
 
       <AuthButtons>
         {authStore.isAuthenticated ? (
-          <Button
-            variant="accent"
-            size="small"
-            onClick={handleLogout}
-          >
+          <Button type="primary" onClick={handleLogout}>
             Logout
           </Button>
         ) : (
           <>
             <Button
-              variant="primary"
-              size="small"
-              onClick={() => navigate('/login')}
+              type="primary"
+              onClick={() => navigate("/login")}
             >
               Login
             </Button>
             <Button
-              variant="accent"
-              size="small"
-              onClick={() => navigate('/register')}
+              type="primary"
+              onClick={() => navigate("/register")}
             >
               Sign Up
             </Button>
@@ -111,6 +109,6 @@ const Navbar = observer(() => {
       </AuthButtons>
     </NavbarContainer>
   );
-});
+};
 
-export default Navbar; 
+export default Navbar;

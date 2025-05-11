@@ -1,22 +1,29 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
-import { theme } from '../Styles/theme';
-import Quiz from '../Components/Quiz';
-import Results from '../Components/Results';
-import ConfirmationPopup from '../Components/ConfirmationPopup';
-import { useNavigationBlocker } from '../hooks/useNavigationBlocker';
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useRootStore } from "../Stores";
+import { theme } from "../Styles/theme";
+import Quiz from "../Components/Quiz";
+import Results from "../Components/Results";
+import ConfirmationPopup from "../Components/ConfirmationPopup";
+import { useNavigationBlocker } from "../hooks/useNavigationBlocker";
+import { Button, Card } from "antd";
 
 const PageContainer = styled.div`
-  min-height: 100vh;
+  min-height: 90vh;
   width: 100%;
-  background-color: ${theme.colors.background};
   color: ${theme.colors.text};
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  background-image: linear-gradient(
+    to right top,
+    #a4d0f2,
+    #abc2f5,
+    #c1b0ee,
+    #dc9bd7,
+    #f086b3
+  );
 `;
 
 const GameContainer = styled.div`
@@ -26,48 +33,6 @@ const GameContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing.lg};
-  background: ${theme.colors.background};
-`;
-
-const StartCard = styled.div`
-  background: ${theme.colors.cardBg};
-  padding: ${theme.spacing['2xl']};
-  border-radius: ${theme.borderRadius.large};
-  box-shadow: ${theme.shadows.card};
-  max-width: 600px;
-  width: 100%;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const StartButton = styled.button`
-  padding: ${theme.spacing.sm} ${theme.spacing.lg};
-  font-size: ${theme.typography.fontSize.lg};
-  background: ${theme.colors.accent};
-  color: ${theme.colors.text};
-  border: none;
-  border-radius: ${theme.borderRadius.medium};
-  cursor: pointer;
-  transition: ${theme.transitions.default};
-  box-shadow: ${theme.shadows.button};
-  font-weight: ${theme.typography.fontWeight.semibold};
-
-  &:hover {
-    transform: translateY(-3px);
-    background: ${theme.colors.buttonHover};
-    box-shadow: ${theme.shadows.hover};
-  }
-
-  &::after {
-    content: '🎯';
-    margin-left: ${theme.spacing.xs};
-    display: inline-block;
-    transition: transform 0.2s ease;
-  }
-
-  &:hover::after {
-    transform: scale(1.2);
-  }
 `;
 
 const LoadingSpinner = styled.div`
@@ -80,8 +45,12 @@ const LoadingSpinner = styled.div`
   margin: ${theme.spacing.lg};
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -92,9 +61,15 @@ const LoadingText = styled.p`
   animation: pulse 2s infinite;
 
   @keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
+    0% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.6;
+    }
   }
 `;
 
@@ -110,23 +85,35 @@ const ErrorMessage = styled.div`
   width: 100%;
 `;
 
-const QuizPage = observer(() => {
+const QuizPage = () => {
   const navigate = useNavigate();
-  const { authStore, quizStore } = useStores();
+  const { auth, quiz } = useRootStore(); // Updated store usage
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
 
-  // Handle initial authentication check and quiz session
   useEffect(() => {
-    if (!authStore.isAuthenticated) {
-      navigate('/login');
+    if (!auth.isAuthenticated) {
+      quiz.setError("You must be logged in to start the quiz.");
       return;
     }
 
-    if (!quizStore.gameStarted && !quizStore.showResults) {
-      quizStore.startNewSession();
+    if (
+      auth.isAuthenticated &&
+      !quiz.gameStarted &&
+      !quiz.showResults &&
+      !quiz.loading &&
+      !quiz.error
+    ) {
+      quiz.startNewSession();
     }
-  }, [authStore.isAuthenticated, navigate, quizStore]);
+  }, [
+    auth.isAuthenticated,
+    quiz.gameStarted,
+    quiz.showResults,
+    quiz.loading,
+    quiz.error,
+    quiz,
+  ]);
 
   const handleBlockedNavigation = useCallback((navigationCallback) => {
     setPendingNavigation(() => navigationCallback);
@@ -134,7 +121,7 @@ const QuizPage = observer(() => {
   }, []);
 
   useNavigationBlocker(
-    quizStore.gameStarted && !quizStore.showResults,
+    quiz.gameStarted && !quiz.showResults,
     handleBlockedNavigation
   );
 
@@ -146,40 +133,40 @@ const QuizPage = observer(() => {
   const handleEndQuiz = () => {
     setShowConfirmation(false);
     if (pendingNavigation) {
-      quizStore.resetGame();
+      quiz.resetGame();
       pendingNavigation();
     } else {
-      quizStore.showResults = true;
-      quizStore.gameStarted = false;
+      quiz.showResults = true;
+      quiz.gameStarted = false;
     }
     setPendingNavigation(null);
   };
 
   const handleStartQuiz = () => {
-    quizStore.startNewSession();
+    quiz.startNewSession();
   };
 
-  if (quizStore.error) {
+  if (quiz.error) {
     return (
       <PageContainer>
         <GameContainer>
           <ErrorMessage>
-            {quizStore.error}
-            <StartButton onClick={handleStartQuiz}>Try Again</StartButton>
+            {quiz.error}
+            <Button onClick={handleStartQuiz}>Try Again</Button>
           </ErrorMessage>
         </GameContainer>
       </PageContainer>
     );
   }
 
-  if (quizStore.loading) {
+  if (quiz.loading) {
     return (
       <PageContainer>
         <GameContainer>
-          <StartCard>
+          <Card>
             <LoadingSpinner />
             <LoadingText>Loading your adventure...</LoadingText>
-          </StartCard>
+          </Card>
         </GameContainer>
       </PageContainer>
     );
@@ -193,36 +180,35 @@ const QuizPage = observer(() => {
         onEnd={handleEndQuiz}
       />
       <GameContainer>
-        {!quizStore.gameStarted && !quizStore.showResults && (
-          <StartCard>
-            <StartButton onClick={handleStartQuiz}>
-              Start New Quiz
-            </StartButton>
-          </StartCard>
+        {!quiz.gameStarted && !quiz.showResults && (
+          <Card>
+            <Button onClick={handleStartQuiz}>Start New Quiz</Button>
+          </Card>
         )}
 
-        {quizStore.gameStarted && quizStore.currentQuestion && (
+        {quiz.gameStarted && quiz.currentQuestion && (
           <Quiz
-            question={quizStore.currentQuestion.question}
-            options={quizStore.currentQuestion.options.map(opt => opt.text)}
-            onOptionSelect={quizStore.submitAnswer}
-            onNextQuestion={quizStore.handleNextQuestion}
-            currentQuestion={quizStore.currentQuestionNumber}
-            totalQuestions={quizStore.totalQuestions}
-            isLastQuestion={quizStore.isLastQuestion}
+            question={quiz.currentQuestion.question}
+            options={quiz.currentQuestion.options.map((opt) => opt.text)}
+            onOptionSelect={quiz.submitAnswer}
+            onNextQuestion={quiz.handleNextQuestion}
+            currentQuestionNumber={quiz.currentQuestionNumber}
+            currentQuestion={quiz.currentQuestion}
+            totalQuestions={quiz.totalQuestions}
+            isLastQuestion={quiz.isLastQuestion}
           />
         )}
 
-        {quizStore.showResults && (
+        {quiz.showResults && (
           <Results
-            score={quizStore.score}
-            totalQuestions={quizStore.totalQuestions}
+            score={quiz.score}
+            totalQuestions={quiz.totalQuestions}
             onRestart={handleStartQuiz}
           />
         )}
       </GameContainer>
     </PageContainer>
   );
-});
+};
 
-export default QuizPage; 
+export default QuizPage;

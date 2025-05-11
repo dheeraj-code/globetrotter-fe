@@ -1,10 +1,9 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
+import { useRootStore } from '../Stores';
 
-const ProtectedRoute = observer(({ children }) => {
+const ProtectedRoute = ({ children }) => {
   const location = useLocation();
-  const { authStore } = useStores();
+  const { auth: authStore } = useRootStore();
 
   if (!authStore.isAuthenticated) {
     // Redirect to login with the current location as the intended destination
@@ -12,6 +11,6 @@ const ProtectedRoute = observer(({ children }) => {
   }
 
   return children;
-});
+};
 
 export default ProtectedRoute; 

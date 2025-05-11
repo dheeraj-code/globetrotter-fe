@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
+import { Button } from "antd";
 
 const Overlay = styled.div`
   position: fixed;

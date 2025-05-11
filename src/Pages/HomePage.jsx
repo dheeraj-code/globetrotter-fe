@@ -5,13 +5,14 @@ import { authService } from '../Services/auth';
 import { theme } from '../Styles/theme';
 
 const PageContainer = styled.div`
-  min-height: 100vh;
+  min-height: 90vh;
   width: 100%;
   background-color: ${theme.colors.background};
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  background-image: linear-gradient(to right top, #a4d0f2, #abc2f5, #c1b0ee, #dc9bd7, #f086b3);
 `;
 
 const WelcomeCard = styled.div`

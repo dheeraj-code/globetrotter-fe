@@ -44,36 +44,39 @@ quizAxios.interceptors.response.use(
 const quizService = {
   startQuizSession: async () => {
     const response = await quizAxios.post('/start');
-    if (!response.data || !response.data.sessionId) {
+    const sessionId = response.data?.id;
+    console.log(response.data)
+    if (!sessionId) {
       throw new Error('Invalid response format: missing sessionId');
     }
-    return response.data.sessionId;
+    return sessionId;
   },
 
   getRandomQuestion: async (sessionId) => {
     if (!sessionId) {
       throw new Error('Session ID is required');
     }
-    const response = await quizAxios.get(`/random/${sessionId}`);
-    if (!response.data) {
+    const questionData = (await quizAxios.get(`/random/${sessionId}`)).data;
+    if (!questionData) {
       throw new Error('Invalid response format: missing question data');
     }
-    return response.data;
+    return questionData;
   },
 
-  submitAnswer: async (sessionId, quizQuestionId, userAnswerCityId) => {
+  submitAnswer: async (sessionId, quizQuestionId, userAnswerCityId, isCorrect) => {
     if (!sessionId || !quizQuestionId || userAnswerCityId === undefined) {
       throw new Error('Missing required parameters for submitting answer');
     }
-    const response = await quizAxios.post('/submit', {
+    const submissionResult = (await quizAxios.post('/answer', {
       sessionId,
       quizQuestionId,
-      userAnswerCityId
-    });
-    if (!response.data) {
+      userAnswerCityId,
+      isCorrect
+    })).data;
+    if (!submissionResult) {
       throw new Error('Invalid response format: missing submission result');
     }
-    return response.data;
+    return submissionResult;
   }
 };
 

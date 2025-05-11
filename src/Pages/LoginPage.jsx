@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
-import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
-import Card from '../Osborn/base/Card';
-import FeedbackMessage from '../Osborn/feedback/FeedbackMessage';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import styled from "styled-components";
+import { useRootStore } from "../Stores";
+import { theme } from "../Styles/theme";
+import { Button, Card, Input, Alert } from "antd";
 
 const PageContainer = styled.div`
-  min-height: 100vh;
+  min-height: 90vh;
   width: 100%;
   background-color: ${theme.colors.background};
   color: ${theme.colors.text};
@@ -17,24 +14,14 @@ const PageContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing.lg};
-`;
-
-const LoginCard = styled(Card)`
-  max-width: 400px;
-  width: 100%;
-`;
-
-const Title = styled.h1`
-  font-size: ${theme.typography.fontSize['2xl']};
-  color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.lg};
-  text-align: center;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.md};
+  background-image: linear-gradient(
+    to right top,
+    #a4d0f2,
+    #abc2f5,
+    #c1b0ee,
+    #dc9bd7,
+    #f086b3
+  );
 `;
 
 const InputGroup = styled.div`
@@ -46,20 +33,6 @@ const InputGroup = styled.div`
 const Label = styled.label`
   color: ${theme.colors.textSecondary};
   font-size: ${theme.typography.fontSize.xs};
-`;
-
-const Input = styled.input`
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.small};
-  border: 1px solid ${theme.colors.border};
-  background: ${theme.colors.cardBg};
-  color: ${theme.colors.text};
-  font-size: ${theme.typography.fontSize.sm};
-
-  &:focus {
-    outline: none;
-    border-color: ${theme.colors.accent};
-  }
 `;
 
 const RegisterLink = styled(Link)`
@@ -74,103 +47,103 @@ const RegisterLink = styled(Link)`
   }
 `;
 
-const LoginPage = observer(() => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { authStore } = useStores();
+  const { auth } = useRootStore();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
   useEffect(() => {
-    console.log('Auth state changed:', authStore.isAuthenticated);
-    if (authStore.isAuthenticated) {
-      const from = location.state?.from || '/';
-      console.log('Redirecting to:', from);
+    if (auth.isAuthenticated) {
+      const from = location.state?.from || "/";
       navigate(from, { replace: true });
     }
-  }, [authStore.isAuthenticated, location.state, navigate]);
+  }, [auth.isAuthenticated, location.state, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
-      const success = await authStore.login(formData.email, formData.password);
-      console.log('Login success:', success);
+      const success = await auth.login(formData.email, formData.password);
       if (success) {
-        authStore.checkAuthStatus(); // Force a check of auth status
+        auth.checkAuthStatus();
       }
     } catch (error) {
-      console.error('Login submission error:', error);
+      console.error("Login submission error:", error);
     }
   };
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
     <PageContainer>
-      <LoginCard padding="large">
-        <Title>Welcome Back</Title>
-        
-        {authStore.error && (
-          <FeedbackMessage
-            type="error"
-            title="Login Error"
-            message={authStore.error}
-            style={{ marginBottom: '1rem' }}
-          />
-        )}
-
-        <Form onSubmit={handleSubmit}>
-          <InputGroup>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
+      <Card title="Welcome Back">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          {auth.error && (
+            <Alert
+              type="error"
+              title="Login Error"
+              message={auth.error}
+              style={{ marginBottom: "1rem" }}
             />
-          </InputGroup>
+          )}
 
-          <InputGroup>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              required
-            />
-          </InputGroup>
+            <InputGroup>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                required
+              />
+            </InputGroup>
 
-          <Button
-            type="submit"
-            variant="accent"
-            fullWidth
-            size="large"
-            disabled={authStore.loading}
-          >
-            {authStore.loading ? 'Logging in...' : 'Login'}
-          </Button>
-        </Form>
+            <InputGroup>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+              />
+            </InputGroup>
 
-        <RegisterLink to="/register">
-          Don't have an account? Sign up
-        </RegisterLink>
-      </LoginCard>
+            <Button
+              type="primary"
+              // variant="accent"
+              size="large"
+              disabled={auth.loading}
+              onClick={handleSubmit}
+            >
+              {auth.loading ? "Logging in..." : "Login"}
+            </Button>
+
+          <RegisterLink to="/register">
+            Don't have an account? Sign up
+          </RegisterLink>
+        </div>
+      </Card>
     </PageContainer>
   );
-});
+};
 
-export default LoginPage; 
+export default LoginPage;

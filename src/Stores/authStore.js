@@ -1,58 +1,46 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { create } from 'zustand';
 import { authService } from '../Services/auth';
 
-class AuthStore {
-  error = null;
-  loading = false;
-  isAuthenticated = false;
+export const useAuthStore = create((set) => ({
+  error: null,
+  loading: false,
+  isAuthenticated: false,
 
-  constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
-    this.checkAuthStatus();
-  }
-
-  async login(email, password) {
-    runInAction(() => {
-      this.loading = true;
-      this.error = null;
-    });
-
+  login: async (email, password) => {
+    set({ loading: true, error: null });
     try {
       const success = await authService.login(email, password);
-      
-      runInAction(() => {
-        if (success) {
-          this.isAuthenticated = true;
-        }
-      });
-
+      if (success) set({ isAuthenticated: true });
       return success;
     } catch (error) {
-      runInAction(() => {
-        this.error = error.message;
-        this.isAuthenticated = false;
-      });
+      set({ error: error.message, isAuthenticated: false });
       return false;
     } finally {
-      runInAction(() => {
-        this.loading = false;
-      });
+      set({ loading: false });
     }
-  }
+  },
 
-  logout() {
+  register: async (username, email, password) => {
+    set({ loading: true, error: null });
+    try {
+      const success = await authService.register(username, email, password);
+      if (success) set({ isAuthenticated: true });
+      return success;
+    } catch (error) {
+      set({ error: error.message, isAuthenticated: false });
+      return false;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  logout: () => {
     authService.logout();
-    runInAction(() => {
-      this.isAuthenticated = false;
-    });
-  }
+    set({ isAuthenticated: false });
+  },
 
-  checkAuthStatus() {
+  checkAuthStatus: () => {
     const isAuth = authService.isAuthenticated();
-    runInAction(() => {
-      this.isAuthenticated = isAuth;
-    });
-  }
-}
-
-export const authStore = new AuthStore(); 
+    set({ isAuthenticated: isAuth });
+  },
+}));

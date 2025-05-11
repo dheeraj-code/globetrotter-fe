@@ -1,7 +1,7 @@
 const getApiBaseUrl = () => {
   // For development
   if (import.meta.env.DEV) {
-    return 'http://localhost:5000';
+    return 'http://localhost:8080';
   }
   
   // For production
@@ -11,7 +11,7 @@ const getApiBaseUrl = () => {
 export const config = {
   apiBaseUrl: getApiBaseUrl(),
   endpoints: {
-    auth: '',
+    auth: '/auth',
     quiz: '/quiz',
     challenge: '/challenge'
   }

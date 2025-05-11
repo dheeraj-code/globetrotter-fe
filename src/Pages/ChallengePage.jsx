@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
-import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
-import Card from '../Osborn/base/Card';
-import FeedbackMessage from '../Osborn/feedback/FeedbackMessage';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useRootStore } from "../Stores";
+import { theme } from "../Styles/theme";
+
+import { Card, Button, Alert } from "antd";
 
 const PageContainer = styled.div`
-  min-height: 100vh;
+  min-height: 90vh;
   width: 100%;
   background-color: ${theme.colors.background};
   color: ${theme.colors.text};
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  background-image: linear-gradient(
+    to right top,
+    #a4d0f2,
+    #abc2f5,
+    #c1b0ee,
+    #dc9bd7,
+    #f086b3
+  );
 `;
 
 const ChallengeContainer = styled.div`
@@ -66,28 +72,26 @@ const ScoreDisplay = styled.div`
   }
 `;
 
-const ChallengePage = observer(() => {
+const ChallengePage = () => {
   const { inviteLink } = useParams();
   const navigate = useNavigate();
-  const { authStore, quizStore } = useStores();
+  const { auth, quiz } = useRootStore(); // Updated store usage
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [challengeData, setChallengeData] = useState(null);
   const [isStarted, setIsStarted] = useState(false);
 
   useEffect(() => {
-    if (!authStore.isAuthenticated) {
-      navigate('/login');
+    if (!auth.isAuthenticated) {
+      navigate("/login");
       return;
     }
 
     const loadChallengeInfo = async () => {
       try {
         setLoading(true);
-        const data = await quizStore.getChallengeInfo(inviteLink);
+        const data = await quiz.getChallengeInfo(inviteLink);
         setChallengeData(data);
-
-        console.log(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -96,17 +100,15 @@ const ChallengePage = observer(() => {
     };
 
     loadChallengeInfo();
-  }, [inviteLink, authStore.isAuthenticated, navigate, quizStore]);
+  }, [inviteLink, auth.isAuthenticated, navigate, quiz]);
 
   const handleStartChallenge = async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Only start the challenge when the button is clicked
-      await quizStore.startChallenge(inviteLink);
+      await quiz.startChallenge(inviteLink);
       setIsStarted(true);
-      navigate('/play');
+      navigate("/play");
     } catch (err) {
       setError(err.message);
       setLoading(false);
@@ -130,16 +132,12 @@ const ChallengePage = observer(() => {
       <PageContainer>
         <ChallengeContainer>
           <ChallengeCard padding="large">
-            <FeedbackMessage
-              type="error"
-              title="Error"
-              message={error}
-            />
+            <Alert type="error" title="Error" message={error} />
             <Button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               variant="primary"
               fullWidth
-              style={{ marginTop: '1rem' }}
+              style={{ marginTop: "1rem" }}
             >
               Return Home
             </Button>
@@ -161,7 +159,9 @@ const ChallengePage = observer(() => {
           {challengeData && (
             <ScoreDisplay>
               <h3>Challenger's Score</h3>
-              <p>{challengeData.inviterScore} / {challengeData.totalQuestions}</p>
+              <p>
+                {challengeData.inviterScore} / {challengeData.totalQuestions}
+              </p>
             </ScoreDisplay>
           )}
 
@@ -176,12 +176,12 @@ const ChallengePage = observer(() => {
             size="large"
             disabled={isStarted}
           >
-            {isStarted ? 'Challenge Started...' : 'Accept Challenge'}
+            {isStarted ? "Challenge Started..." : "Accept Challenge"}
           </Button>
         </ChallengeCard>
       </ChallengeContainer>
     </PageContainer>
   );
-});
+};
 
-export default ChallengePage; 
+export default ChallengePage;

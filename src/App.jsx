@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
 import Navbar from './Components/Navbar';
 import LoginPage from './Pages/LoginPage';
 import RegisterPage from './Pages/RegisterPage';
@@ -11,9 +10,10 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import { theme } from './Styles/theme';
 
 const AppContainer = styled.div`
-  min-height: 100vh;
+  min-height: 90vh;
   background: ${theme.colors.background};
   color: ${theme.colors.text};
+  background-image: linear-gradient(to right top, #a4d0f2, #abc2f5, #c1b0ee, #dc9bd7, #f086b3);
 `;
 
 const MainContent = styled.main`
@@ -87,8 +87,8 @@ const router = createBrowserRouter(
   )
 );
 
-const App = observer(() => {
+const App = () => {
   return <RouterProvider router={router} />;
-});
+};
 
 export default App;

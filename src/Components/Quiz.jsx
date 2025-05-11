@@ -1,29 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
-import Card from '../Osborn/base/Card';
-import Progress from '../Osborn/base/Progress';
-import FeedbackMessage from '../Osborn/feedback/FeedbackMessage';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { theme } from "../Styles/theme";
+import { Card, Typography, Progress, Button, Alert } from "antd";
+import { useRootStore } from "../Stores";
 
-const QuizContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.lg};
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: ${theme.spacing.lg};
-`;
-
-const QuestionText = styled.h2`
-  font-size: ${theme.typography.fontSize.xl};
-  color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.md};
-  text-align: center;
-`;
+const { Title } = Typography;
 
 const OptionsGrid = styled.div`
   display: grid;
@@ -34,9 +16,10 @@ const OptionsGrid = styled.div`
 
 const FeedbackSection = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.sm};
-  margin-top: ${theme.spacing.md};
+  flex-direction: row;
+  gap: ${theme.spacing.md};
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const FunFactContainer = styled.div`
@@ -63,31 +46,37 @@ const FunFactContainer = styled.div`
   }
 `;
 
-const Quiz = observer(({
+const Quiz = ({
   question,
   options,
   onOptionSelect,
   onNextQuestion,
+  currentQuestionNumber,
   currentQuestion,
   totalQuestions,
-  isLastQuestion
+  isLastQuestion,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
+const { score } = useRootStore().quiz;
+  const progress = (score / totalQuestions) * 100;
+
   const handleOptionClick = async (option) => {
     if (showFeedback) return;
-    
+
     setSelectedOption(option);
     const result = await onOptionSelect(option);
-    
+
+    console.log(result, question, currentQuestion);
+
     if (result) {
       setFeedback({
         isCorrect: result.isCorrect,
         funFact: result.funFact,
         trivia: result.trivia,
-        correctAnswerIndex: result.correctAnswerIndex
+        correctAnswerIndex: result.correctAnswerIndex,
       });
       setShowFeedback(true);
     }
@@ -100,67 +89,79 @@ const Quiz = observer(({
     onNextQuestion();
   };
 
-  const progress = ((currentQuestion - 1) / totalQuestions) * 100;
+  console.log(score, progress);
 
   return (
-    <QuizContainer>
-      <Progress 
-        progress={progress}
-        color="accent"
-        size="medium"
-        variant="default"
-        animated={true}
-        showLabel={true}
-        label={`Question ${currentQuestion} of ${totalQuestions}`}
-      />
-      
-      <Card padding="large">
-        <QuestionText>{question}</QuestionText>
-        
+    <Card
+      size="large"
+      style={{
+        width: "700px",
+      }}
+      title={
+        <Progress
+          percent={progress}
+          color="accent"
+          size="medium"
+          variant="default"
+          animated={true}
+          showLabel={true}
+          label={`Question ${currentQuestionNumber} of ${totalQuestions}`}
+        />
+      }
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <Title strong level={3}>
+          {question}
+        </Title>
+
         <OptionsGrid>
-          {options.map((option, index) => (
-            <Button
-              key={index}
-              onClick={() => handleOptionClick(option)}
-              disabled={showFeedback}
-              variant={
-                showFeedback
-                  ? feedback.correctAnswerIndex === index
-                    ? 'success'
-                    : selectedOption === option
-                    ? 'error'
-                    : 'default'
-                  : selectedOption === option
-                  ? 'primary'
-                  : 'default'
+          {options.map((option, index) => {
+            let buttonColor = "purple";
+            if (showFeedback) {
+              if (feedback.correctAnswerIndex === index) {
+                buttonColor = "green";
+              } else if (selectedOption === option) {
+                buttonColor = "danger";
               }
-              fullWidth
-            >
-              {option}
-            </Button>
-          ))}
+            } else if (selectedOption === option) {
+              buttonColor = "purple";
+            }
+
+            return (
+              <Button
+                type="primary"
+                key={index}
+                onClick={() => handleOptionClick(option)}
+                disabled={showFeedback}
+                color={buttonColor}
+              >
+                {option}
+              </Button>
+            );
+          })}
         </OptionsGrid>
 
         {showFeedback && (
           <FeedbackSection>
-            <Button
-              onClick={handleNextClick}
-              variant="primary"
-              fullWidth
-            >
-              {isLastQuestion ? 'Show Results' : 'Next Question'}
-            </Button>
-
-            <FeedbackMessage
-              type={feedback.isCorrect ? 'success' : 'error'}
+            <Alert
+              type={feedback.isCorrect ? "success" : "error"}
               title={feedback.isCorrect ? "Correct! 🎉" : "Incorrect"}
               message={
-                feedback.isCorrect 
+                feedback.isCorrect
                   ? "Great job! You got it right!"
-                  : `The correct answer was: ${options[feedback.correctAnswerIndex]}`
+                  : `The correct answer was: ${
+                      options[feedback.correctAnswerIndex]
+                    }`
               }
+              showIcon
             />
-            
+
             {feedback.funFact && (
               <FunFactContainer>
                 <h3>📚 Fun Fact</h3>
@@ -174,21 +175,26 @@ const Quiz = observer(({
                 <p>{feedback.trivia}</p>
               </FunFactContainer>
             )}
+
+            <Button onClick={handleNextClick} variant="primary">
+              {isLastQuestion ? "Show Results" : "Next Question >>"}
+            </Button>
           </FeedbackSection>
         )}
-      </Card>
-    </QuizContainer>
+      </div>
+    </Card>
   );
-});
+};
 
 Quiz.propTypes = {
   question: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
   onOptionSelect: PropTypes.func.isRequired,
   onNextQuestion: PropTypes.func.isRequired,
+  currentQuestionNumber: PropTypes.number.isRequired,
   currentQuestion: PropTypes.number.isRequired,
   totalQuestions: PropTypes.number.isRequired,
-  isLastQuestion: PropTypes.bool.isRequired
+  isLastQuestion: PropTypes.bool.isRequired,
 };
 
-export default Quiz; 
+export default Quiz;

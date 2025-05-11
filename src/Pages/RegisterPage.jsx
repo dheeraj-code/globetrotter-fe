@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { observer } from 'mobx-react-lite';
-import { useStores } from '../Stores';
-import { theme } from '../Styles/theme';
-import Button from '../Osborn/base/Button';
-import Card from '../Osborn/base/Card';
-import FeedbackMessage from '../Osborn/feedback/FeedbackMessage';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import styled from "styled-components";
+import { useRootStore } from "../Stores";
+import { theme } from "../Styles/theme";
+import { Button, Card, Input, Alert } from "antd";
 
 const PageContainer = styled.div`
-  min-height: 100vh;
+  min-height: 90vh;
   width: 100%;
   background-color: ${theme.colors.background};
   color: ${theme.colors.text};
@@ -17,6 +14,14 @@ const PageContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  background-image: linear-gradient(
+    to right top,
+    #a4d0f2,
+    #abc2f5,
+    #c1b0ee,
+    #dc9bd7,
+    #f086b3
+  );
 `;
 
 const RegisterCard = styled(Card)`
@@ -48,20 +53,6 @@ const Label = styled.label`
   font-size: 0.9rem;
 `;
 
-const Input = styled.input`
-  padding: 0.8rem;
-  border-radius: ${theme.borderRadius.small};
-  border: 1px solid ${theme.colors.border};
-  background: ${theme.colors.cardBg};
-  color: ${theme.colors.text};
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${theme.colors.accent};
-  }
-`;
-
 const LoginLink = styled(Link)`
   color: ${theme.colors.accent};
   text-decoration: none;
@@ -74,42 +65,48 @@ const LoginLink = styled(Link)`
   }
 `;
 
-const RegisterPage = observer(() => {
+const RegisterPage = () => {
   const navigate = useNavigate();
-  const { authStore } = useStores();
+  const { auth: authStore } = useRootStore();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // Basic validation
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('All fields are required');
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError("All fields are required");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     try {
-      await authStore.register(formData.username, formData.email, formData.password);
-      navigate('/');
+      await authStore.register(
+        formData.username,
+        formData.email,
+        formData.password
+      );
+      navigate("/");
     } catch (err) {
       setError(err.message);
     }
@@ -117,19 +114,21 @@ const RegisterPage = observer(() => {
 
   return (
     <PageContainer>
-      <RegisterCard padding="large">
-        <Title>Create Account</Title>
-        
+      <RegisterCard padding="large" title={"Create Account"}>
         {error && (
-          <FeedbackMessage
+          <Alert
             type="error"
             title="Registration Error"
             message={error}
-            style={{ marginBottom: '1rem' }}
           />
         )}
-
-        <Form onSubmit={handleSubmit}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
           <InputGroup>
             <Label htmlFor="username">Username</Label>
             <Input
@@ -179,21 +178,18 @@ const RegisterPage = observer(() => {
           </InputGroup>
 
           <Button
-            type="submit"
-            variant="accent"
-            fullWidth
+            type="primary"
             size="large"
+            disabled={authStore.loading}
+            onClick={handleSubmit}
           >
             Register
           </Button>
-        </Form>
-
-        <LoginLink to="/login">
-          Already have an account? Log in
-        </LoginLink>
+          <LoginLink to="/login">Already have an account? Log in</LoginLink>
+        </div>
       </RegisterCard>
     </PageContainer>
   );
-});
+};
 
-export default RegisterPage; 
+export default RegisterPage;
